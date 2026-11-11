@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aidlc.dev/schemas/reqspec.schema.json",
+  "title": "ReqSpec",
+  "description": "Canonical, human-editable requirements model used by the UI, deterministic validators, and AI context compiler.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "project", "personas", "requirements", "stories", "decisions", "openQuestions"],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "project": { "$ref": "#/$defs/project" },
+    "personas": { "type": "array", "items": { "$ref": "#/$defs/persona" } },
+    "requirements": { "type": "array", "items": { "$ref": "#/$defs/requirement" } },
+    "stories": { "type": "array", "items": { "$ref": "#/$defs/story" } },
+    "decisions": { "type": "array", "items": { "$ref": "#/$defs/decision" } },
+    "openQuestions": { "type": "array", "items": { "$ref": "#/$defs/openQuestion" } },
+    "metadata": { "$ref": "#/$defs/metadata" }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[A-Z][A-Z0-9]*(?:[.-][A-Z0-9]+)*$" },
+    "text": { "type": "string", "minLength": 1 },
+    "priority": { "type": "string", "enum": ["must", "should", "could", "wont", "unknown"] },
+    "status": { "type": "string", "enum": ["draft", "confirmed", "blocked", "deferred", "rejected"] },
+    "project": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "name", "problem", "goal", "scopeIn", "scopeOut"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "$ref": "#/$defs/text" },
+        "problem": { "$ref": "#/$defs/text" },
+        "goal": { "$ref": "#/$defs/text" },
+        "successMetrics": { "type": "array", "items": { "$ref": "#/$defs/text" } },
+        "scopeIn": { "type": "array", "items": { "$ref": "#/$defs/text" } },
+        "scopeOut": { "type": "array", "items": { "$ref": "#/$defs/text" } },
+        "constraints": { "type": "array", "items": { "$ref": "#/$defs/text" } },
+        "assumptions": { "type": "array", "items": { "$ref": "#/$defs/text" } }
+      }
+    },
+    "persona": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "name", "need"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+        "name": { "$ref": "#/$defs/text" },
+        "need": { "$ref": "#/$defs/text" },
+        "goals": { "type": "array", "items": { "$ref": "#/$defs/text" } },
+        "painPoints": { "type": "array", "items": { "$ref": "#/$defs/text" } }
+      }
+    },
+    "acceptanceCriterion": {
+      "type": "object", "additionalProperties": false,
+      "required": ["given", "when", "then"],
+      "properties": {
+        "given": { "$ref": "#/$defs/text" },
+        "when": { "$ref": "#/$defs/text" },
+        "then": { "$ref": "#/$defs/text" }
+      }
+    },
+    "requirement": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "kind", "statement", "priority", "status", "sourceRefs", "acceptance"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^(FR|NFR)[0-9]+(?:\\.[0-9]+)?$" },
+        "kind": { "type": "string", "enum": ["functional", "non-functional"] },
+        "statement": { "$ref": "#/$defs/text" },
+        "rationale": { "type": "string" },
+        "priority": { "$ref": "#/$defs/priority" },
+        "status": { "$ref": "#/$defs/status" },
+        "personaRefs": { "type": "array", "items": { "type": "string" } },
+        "sourceRefs": { "type": "array", "items": { "type": "string" } },
+        "dependsOn": { "type": "array", "items": { "type": "string" } },
+        "acceptance": { "type": "array", "items": { "$ref": "#/$defs/acceptanceCriterion" } },
+        "metric": { "type": "string" },
+        "notes": { "type": "string" }
+      }
+    },
+    "story": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "personaRef", "action", "benefit", "requirementRefs", "acceptance", "status"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^US[0-9]+(?:\\.[0-9]+)?$" },
+        "personaRef": { "type": "string" },
+        "action": { "$ref": "#/$defs/text" },
+        "benefit": { "$ref": "#/$defs/text" },
+        "requirementRefs": { "type": "array", "items": { "type": "string" } },
+        "acceptance": { "type": "array", "items": { "$ref": "#/$defs/acceptanceCriterion" } },
+        "status": { "$ref": "#/$defs/status" },
+        "priority": { "$ref": "#/$defs/priority" }
+      }
+    },
+    "decision": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "question", "answer", "status"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^DEC-[0-9]+$" },
+        "question": { "$ref": "#/$defs/text" },
+        "answer": { "$ref": "#/$defs/text" },
+        "status": { "type": "string", "enum": ["proposed", "confirmed", "rejected"] },
+        "rationale": { "type": "string" },
+        "sourceRefs": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "openQuestion": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "question", "status"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^Q[0-9]+$" },
+        "question": { "$ref": "#/$defs/text" },
+        "status": { "type": "string", "enum": ["open", "answered", "deferred"] },
+        "relatedRefs": { "type": "array", "items": { "type": "string" } },
+        "answer": { "type": "string" }
+      }
+    },
+    "metadata": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "updatedAt": { "type": "string" },
+        "updatedBy": { "type": "string" },
+        "revision": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

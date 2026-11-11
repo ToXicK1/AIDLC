@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "1.0",
+  "project": {
+    "id": "support-portal",
+    "name": "Customer Support Portal",
+    "problem": "Support agents spend too long finding customer history.",
+    "goal": "Reduce the time needed to understand a customer's previous interactions.",
+    "successMetrics": ["90% of agents find a customer record within 30 seconds"],
+    "scopeIn": ["Customer search", "Customer interaction history"],
+    "scopeOut": ["Billing changes", "Mobile application"],
+    "constraints": ["Must use the existing identity provider"],
+    "assumptions": ["Customer email is unique"]
+  },
+  "personas": [
+    {
+      "id": "support-agent",
+      "name": "Support agent",
+      "need": "Find accurate customer context quickly"
+    }
+  ],
+  "requirements": [
+    {
+      "id": "FR1",
+      "kind": "functional",
+      "statement": "The system shall allow an authenticated support agent to search customer records by email.",
+      "rationale": "Agents need a fast way to locate the correct customer.",
+      "priority": "must",
+      "status": "confirmed",
+      "personaRefs": ["support-agent"],
+      "sourceRefs": ["project.goal", "DEC-1"],
+      "acceptance": [
+        {
+          "given": "An authenticated support agent is viewing the search page",
+          "when": "They submit a valid customer email",
+          "then": "The matching customer record is displayed"
+        }
+      ]
+    }
+  ],
+  "stories": [],
+  "decisions": [
+    {
+      "id": "DEC-1",
+      "question": "Which identity system should be used?",
+      "answer": "The existing company identity provider",
+      "status": "confirmed"
+    }
+  ],
+  "openQuestions": [
+    {
+      "id": "Q1",
+      "question": "Should partial email matches be supported?",
+      "status": "open",
+      "relatedRefs": ["FR1"]
+    }
+  ]
+}
