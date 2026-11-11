@@ -1,0 +1,49 @@
+{
+  "name": "aidlc-studio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "AI-DLC Studio - a visual IDE around the AI-DLC engine and its harnesses.",
+  "license": "MIT-0",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "node scripts/build.mjs",
+    "start": "node server/src/index.ts --open",
+    "serve": "node server/src/index.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "npm run test:server && npm run test:integration && npm run test:web",
+    "test:server": "node --test \"server/test/unit/**/*.test.ts\"",
+    "test:integration": "node --test --test-concurrency=1 \"server/test/integration/**/*.test.ts\"",
+    "test:web": "bun test web/test"
+  },
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.3.158",
+    "chokidar": "^4.0.3",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@happy-dom/global-registrator": "^18.0.1",
+    "@monaco-editor/react": "^4.7.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/bun": "^1.2.20",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "lucide-react": "^0.540.0",
+    "mermaid": "^11.9.0",
+    "monaco-editor": "^0.52.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-markdown": "^10.1.0",
+    "react-resizable-panels": "^3.0.4",
+    "remark-gfm": "^4.0.1",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.9.2",
+    "zustand": "^5.0.7"
+  }
+}
